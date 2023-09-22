@@ -14,8 +14,9 @@ def read_features_from_combined_file(filename,long_or_short):
         strand = int(row['strand'])
         color = color_mapping.get(row['feature_type'], "gray")
         label = row['long_label'] if long_or_short == 'long' else row['short_label']
-        if label == "None":
-            label  =None
+        if pd.isna(label):
+            label = None
+
         feature = GraphicFeature(
             start=start,
             end=end,

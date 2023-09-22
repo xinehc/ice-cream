@@ -498,8 +498,8 @@ if($dr_max_mismatch == 0){
 my $dr_min_length = 15;
 if($gram_postive_tag == 1 && $rep_tag >= 1)
 {$dr_min_length = 40;}
-my $maktree_cmd = "./tools/mkvtree -db $candidate_region_fna -indexname $candidate_region_fna -dna -pl -lcp -suf -tis -ois -bwt -bck -sti1";
-my $vmatch_cmd = "./tools/vmatch -l $dr_min_length $mismatch_arg $candidate_region_fna >$direct_repeat_out";
+my $maktree_cmd = "mkvtree -db $candidate_region_fna -indexname $candidate_region_fna -dna -pl -lcp -suf -tis -ois -bwt -bck -sti1";
+my $vmatch_cmd = "vmatch -l $dr_min_length $mismatch_arg $candidate_region_fna >$direct_repeat_out";
 system "$maktree_cmd";
 system "$vmatch_cmd";
 

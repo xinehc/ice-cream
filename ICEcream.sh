@@ -150,7 +150,7 @@ run_icefamily_identify(){
 			echo "=== Step 2.2: studying $line prodigal"
 			local fasta_file="${tempF}/${line}.fa"
 			local prodigal_output="${tempF}/${line}.fa_prodigal.faa"
-			ICEfamily_refer/familytools/prodigal -p meta -i "$fasta_file" -a "$prodigal_output" -q >> ${tempF}/icefamily.identification.log
+			prodigal -p meta -i "$fasta_file" -a "$prodigal_output" -q >> ${tempF}/icefamily.identification.log
 			if [ -f "${fasta_file}a" ]; then
 				python ICEfamily_refer/familytools/amendORF.py "${fasta_file}a" "$prodigal_output"
 				cat "${fasta_file}a" "${tempF}/${line}.faa_append.faa" > "${tempF}/${line}.fa2.faa"
@@ -158,7 +158,7 @@ run_icefamily_identify(){
 				python ICEfamily_refer/familytools/amendORF2.py "$fasta_file"
 			fi
 			echo "=== Step 2.3: studying $line hmmscan"
-			tools/hmmscan --tblout "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" --cpu 20 data/ICE.hmm.db "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
+			hmmscan --tblout "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" --cpu 20 data/ICE.hmm.db "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
 			grep -v "#" "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" | tr -s ' ' '\t' > "${tempF}/${line}.fa2.faa.icefinder.hmmscan.modified.out"
 			hmmscan --tblout "${tempF}/${line}.fa2.faa.YXL.hmmscan.out" --cpu 20 ICEfamily_refer/conjugation/YXL_26family.hmm "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
 			grep -v "#" "${tempF}/${line}.fa2.faa.YXL.hmmscan.out" | tr -s ' ' '\t' > "${tempF}/${line}.fa2.faa.YXL.hmmscan.modified.out"

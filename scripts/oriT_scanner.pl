@@ -35,7 +35,7 @@ my $db_dir = "./data/";
 ### input file
 my $seq_fna = $candidate_dir."candidate_region_".$i.".fna"; #<seq_fna_file>
 ### tools or scripts
-my $blast = "./tools/blastn";
+my $blast = "blastn";
 my $blast_db = "$db_dir/oriT.fna.db";
 ### parameters
 my $evalue = 0.01; 

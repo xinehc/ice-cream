@@ -29,7 +29,7 @@ my $blastHitNo=3;
 ##############################
 # blastp search
 ##############################
-system("$blast_path/$blastprogram -query $query -db $subject -outfmt 0 -num_alignments 3 -evalue 0.0001 -num_threads 10 -out $outputfile");
+system("blastn -query $query -db $subject -outfmt 0 -num_alignments 3 -evalue 0.0001 -num_threads 10 -out $outputfile");
 ParseBlastnSearch($blastHitNo, $outputfile, $blastparse);
 	
 if (-e $blastparse){

@@ -45,7 +45,7 @@ my $ice_hmm_db = $db_dir."ICE.hmm.db";### ICE singature protein hmm
 my $threshold_file = $db_dir."threshold";###JUN definded parameters
 
 #cmd
-my $hmmscan_cmd = "./tools/hmmscan";
+my $hmmscan_cmd = "hmmscan";
 my $analyze_cmd = $script_dir."region_analyzer_s.pl";
 my $ARG_VF_cmd = "./scripts/ARG_VF_scanner.pl";
 

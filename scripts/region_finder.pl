@@ -47,7 +47,7 @@ my $ice_hmm_db = $db_dir."ICE.hmm.db";### ICE singature protein hmm
 my $threshold_file = $db_dir."threshold";###JUN definded parameters
 
 #cmd
-my $hmmscan_cmd = "./tools/hmmscan";
+my $hmmscan_cmd = "hmmscan";
 my $analyze_cmd = $script_dir."region_analyzer.pl";
 #my $ARG_VF_cmd = "./scripts/ARG_VF_scanner.pl";
 
@@ -219,7 +219,7 @@ while ( my $seq = $seqio_obj_aa->next_seq() ) {
 #2   tRNA-Ile               [122234,122310]	35  	(gat)
 #3   tRNA-Ala               [122347,122422]	34  	(tgc)
 #4   tRNA-Asp               [125762,125838]	35  	(gtc)
-	system("./tools/aragorn  -o $tmrna $tmp_path/$job_id.fna");
+	system("aragorn  -o $tmrna $tmp_path/$job_id.fna");
   open TMRNA, "$tmrna";
   open NEWRNT, "> $seq_RNA";
 	my %rna = ();
