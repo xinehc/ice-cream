@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 import pandas as pd
 from dna_features_viewer import GraphicFeature, GraphicRecord
