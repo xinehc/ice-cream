@@ -42,6 +42,7 @@ while [[ $# -gt 0 ]]; do
         ;;
 		--help|-h)
         display_help
+        exit 0
         ;;
 	    --version|-v)
         echo "Script Version: $SCRIPT_VERSION"
