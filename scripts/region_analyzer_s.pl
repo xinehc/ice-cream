@@ -3,7 +3,7 @@
 # School of Life Sciences & Biotechnology, Shanghai Jiao Tong University
 
 use strict;
-use Bio::Perl;
+# use Bio::Perl;
 use Bio::SeqIO;
 use Getopt::Std;
 

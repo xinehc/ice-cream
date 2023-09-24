@@ -5,7 +5,7 @@
 # University of Hong Kong
 
 use strict;
-use Bio::Perl;
+# use Bio::Perl;
 use Bio::SeqIO;
 use Getopt::Std;
 our ($opt_h, $opt_i, $opt_t, $opt_o, $opt_a) = "";

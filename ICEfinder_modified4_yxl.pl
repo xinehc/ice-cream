@@ -1,4 +1,4 @@
-#! ~/perl5
+#!/usr/bin/env perl
 
 ## Modified by Yin Xiaole on October 5th, 2020. yinlele99@gmail.com
 # University of Hong Kong
@@ -8,7 +8,7 @@
 
 use warnings;
 use strict;
-use Bio::Perl;
+# use Bio::Perl;
 use Bio::SeqIO;
 use Getopt::Std;
 use File::Basename;

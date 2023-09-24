@@ -3,7 +3,7 @@
 # School of Life Sciences & Biotechnology, Shanghai Jiao Tong University
 
 use strict;
-use Bio::Perl;
+# use Bio::Perl;
 use Bio::SeqIO;
 use Getopt::Std;
 our ($opt_h, $opt_i, $opt_t, $opt_o, $opt_a, $opt_n, $opt_r, $opt_d, $opt_g) = "";
