@@ -19,7 +19,7 @@ display_help() {
     echo "  --output  Path for generating a new OUTPUT folder"
 	echo "  --version Display script version"
     echo "  --help    Display this help message."
-    exit 1
+    exit 0
 }
 
 while [[ $# -gt 0 ]]; do
@@ -42,7 +42,6 @@ while [[ $# -gt 0 ]]; do
         ;;
 		--help|-h)
         display_help
-        exit 0
         ;;
 	    --version|-v)
         echo "Script Version: $SCRIPT_VERSION"
