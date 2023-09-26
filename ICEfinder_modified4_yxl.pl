@@ -12,6 +12,8 @@ use strict;
 use Bio::SeqIO;
 use Getopt::Std;
 use File::Basename;
+my $SCRIPT_DIR = dirname(__FILE__);
+
 
 our ($opt_h, $opt_i, $opt_t, $opt_o) = "";
 my $usage = <<USE;
@@ -74,9 +76,9 @@ while(<FILE>){
 				my $faa_file = "$tmp_path/$acc.gi.faa";
 				#!system("$seqret_cmd $candidate_gbk $candidate_fna 1>/dev/null 2>/dev/null") or die("For $acc:\n Error:  The uploaded file of $acc is not a standard GenBank format!\n");# generate fna file
 				#!system("$seqret_cmd $candidate_gbk $candidate_fna 1>/dev/null 2>/dev/null") or die("For $acc:\n Error:  The uploaded file of $acc is not a standard GenBank format!\n");# generate fna file
-				!system("perl ./scripts/gbk2ptt.pl -a $acc -i $opt_i -t $opt_t -o $opt_o") or die("For $acc:\n Error:  The uploaded file of $acc is not a standard GenBank format!\n");	# generate $ptt_file
+				!system("perl $SCRIPT_DIR/scripts/gbk2ptt.pl -a $acc -i $opt_i -t $opt_t -o $opt_o") or die("For $acc:\n Error:  The uploaded file of $acc is not a standard GenBank format!\n");	# generate $ptt_file
 				TransformCDSFile($ptt_file);
-				system "python ./scripts/readCDSseq.py $candidate_gbk $tsv_file $candidate_fna $ffa_file $faa_file";
+				system "python $SCRIPT_DIR/scripts/readCDSseq.py $candidate_gbk $tsv_file $candidate_fna $ffa_file $faa_file";
 				#system "./tools/readCDSseq $candidate_fna $tsv_file $ffa_file 1> /dev/null 2>/dev/null"; ## generate $ffa_file ;$ffa_file contains coding fna 
 				#system "$transeq_cmd -clean $ffa_file $faa_file	1> /dev/null 2>/dev/null"; ## 	generate $faa_file with $ffa_file ## add -clean to avoid the stop codon.
 				## check the ptt file
@@ -101,12 +103,12 @@ while(<FILE>){
 				my $genome_desc = $genome_seq_obj->desc;
 				
 				if ($genome_len <= 1000000){ ## for contig with size smaller than 1 Mb
-					my $cmd_ice_s = "perl ./scripts/region_finder_s.pl -i $opt_i -a $acc -t $opt_t -o $opt_o";
+					my $cmd_ice_s = "perl $SCRIPT_DIR/scripts/region_finder_s.pl -i $opt_i -a $acc -t $opt_t -o $opt_o";
 					system($cmd_ice_s);
 				}else{	
 					#system("perl ./scripts/gram_detector.pl $acc");		
-					system "python ./scripts/gram_detector.py $acc $opt_t";
-     			my $cmd_ice ="perl ./scripts/region_finder.pl -i $opt_i -a $acc -t $opt_t -o $opt_o";
+					system "python $SCRIPT_DIR/scripts/gram_detector.py $acc $opt_t";
+     			my $cmd_ice ="perl $SCRIPT_DIR/scripts/region_finder.pl -i $opt_i -a $acc -t $opt_t -o $opt_o";
       		system($cmd_ice);
 				}
 				    
@@ -173,14 +175,3 @@ sub TransformCDSFile{
         close (OUTFILE);
       
 }
-
-
-
- 
-
-
-
-
-
-
-

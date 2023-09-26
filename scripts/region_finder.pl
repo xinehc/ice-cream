@@ -8,6 +8,9 @@ use strict;
 # use Bio::Perl;
 use Bio::SeqIO;
 use Getopt::Std;
+use File::Basename;
+my $SCRIPT_DIR = dirname(__FILE__);
+
 our ($opt_h, $opt_i, $opt_t, $opt_o, $opt_a) = "";
 my $usage = q(
 This script is used to detect the signature sequence about integrative and/or conjugative module 
@@ -38,7 +41,6 @@ system "mkdir $download_dir";
 system "chmod 777 $download_dir";
 
 my $error_log = $tmp_path."run_region_finder.log";
-my $script_dir = "./scripts/";
 
 #database
 my $db_dir = "./data/";
@@ -48,7 +50,7 @@ my $threshold_file = $db_dir."threshold";###JUN definded parameters
 
 #cmd
 my $hmmscan_cmd = "hmmscan";
-my $analyze_cmd = $script_dir."region_analyzer.pl";
+my $analyze_cmd = "$SCRIPT_DIR/region_analyzer.pl";
 #my $ARG_VF_cmd = "./scripts/ARG_VF_scanner.pl";
 
 
@@ -451,7 +453,7 @@ while($can_region[$k][0]){
 	my $hmm_ice_cmd = "$hmmscan_cmd --domtblout $ice_hmm_out --cpu 20 $ice_hmm_db $candidate_region_faa 1>/dev/null 2>>$error_log";### to dectect ICE specific protein
 	`$hmm_ice_cmd`;
 	
-	my $orit_blastn_cmd = "perl ./scripts/oriT_scanner.pl -a $job_id -n $i -t $opt_t";
+	my $orit_blastn_cmd = "perl $SCRIPT_DIR/oriT_scanner.pl -a $job_id -n $i -t $opt_t";
 	`$orit_blastn_cmd`;
 	
 	$k++ ;

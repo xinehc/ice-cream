@@ -5,6 +5,7 @@ inputF=""
 tempF=""
 outputF=""
 SCRIPT_VERSION="1.10"
+SCRIPT_DIR=$(dirname $(realpath $0))
 
 remove_trailing_slash() {
     echo "$1" | sed 's:/*$::'
@@ -94,7 +95,7 @@ printf '=%.0s' $(seq 1 $terminal_width)
 echo "=== Step 1: locate ICEs"
 # run_icefinder
 run_icefinder() {
-	perl ICEfinder_modified4_yxl.pl -i "$inputF" -t "$tempF" -o "$outputF" > "$tempF"/icefinder.log
+	perl $SCRIPT_DIR/ICEfinder_modified4_yxl.pl -i "$inputF" -t "$tempF" -o "$outputF" > "$tempF"/icefinder.log
     cat "$outputF"/*/*_summary.txt > "$outputF"/icefinder.result.summary.txt
     local ice_count=$(wc -l < "$outputF/icefinder.result.summary.txt")
     echo "=== Step 1.1: icefinder finished, how many ICEs identified: $ice_count"
@@ -108,7 +109,7 @@ run_icefinder_amend(){
 	if [ "$potential_ice_count" -ne 0 ]; then
 		echo "=== Step 1.2: parse, prokka and redo icefinder"
 		echo "=== Step 1.2: parse"
-		python scripts/GbffParser_YXL_2023.py -i "$inputF" -f .gbk -o "$tempF" > "${tempF}/parser.log"
+		python $SCRIPT_DIR/scripts/GbffParser_YXL_2023.py -i "$inputF" -f .gbk -o "$tempF" > "${tempF}/parser.log"
 		mkdir -p "${tempF}/prokka"
 		mkdir -p "${tempF}/prokka_out"
 		while read -r line; do 
@@ -119,7 +120,7 @@ run_icefinder_amend(){
             prokka --outdir "${tempF}/prokka_out" --force --prefix "$line" --cpus 20 "${tempF}/prokka/${line}.fna" --quiet
         done < "${tempF}/icefinder_first_error.txt" > "${tempF}/prokka.log"
         echo "=== Step 1.2: redo icefinder"
-		perl ICEfinder_modified4_yxl.pl -i "${tempF}"/prokka_out -t "${tempF}"/prokka_tmp -o "${tempF}"/prokka_icefinder > "${tempF}/icefinder.log.prokka"
+		perl $SCRIPT_DIR/ICEfinder_modified4_yxl.pl -i "${tempF}"/prokka_out -t "${tempF}"/prokka_tmp -o "${tempF}"/prokka_icefinder > "${tempF}/icefinder.log.prokka"
         if [ -f "${tempF}"/prokka_icefinder/*/*_summary.txt ]; then
 		    cat "${tempF}"/prokka_icefinder/*/*_summary.txt >> "$outputF/icefinder.result.summary.txt"
 			local new_ice_count=$(wc -l < "${tempF}"/prokka_icefinder/*/*_summary.txt)
@@ -152,20 +153,20 @@ run_icefamily_identify(){
 			local prodigal_output="${tempF}/${line}.fa_prodigal.faa"
 			prodigal -p meta -i "$fasta_file" -a "$prodigal_output" -q >> ${tempF}/icefamily.identification.log
 			if [ -f "${fasta_file}a" ]; then
-				python ICEfamily_refer/familytools/amendORF.py "${fasta_file}a" "$prodigal_output"
+				python $SCRIPT_DIR/ICEfamily_refer/familytools/amendORF.py "${fasta_file}a" "$prodigal_output"
 				cat "${fasta_file}a" "${tempF}/${line}.faa_append.faa" > "${tempF}/${line}.fa2.faa"
 			else
-				python ICEfamily_refer/familytools/amendORF2.py "$fasta_file"
+				python $SCRIPT_DIR/ICEfamily_refer/familytools/amendORF2.py "$fasta_file"
 			fi
 			echo "=== Step 2.3: studying $line hmmscan"
 			hmmscan --tblout "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" --cpu 20 data/ICE.hmm.db "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
 			grep -v "#" "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" | tr -s ' ' '\t' > "${tempF}/${line}.fa2.faa.icefinder.hmmscan.modified.out"
-			hmmscan --tblout "${tempF}/${line}.fa2.faa.YXL.hmmscan.out" --cpu 20 ICEfamily_refer/conjugation/YXL_26family.hmm "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
+			hmmscan --tblout "${tempF}/${line}.fa2.faa.YXL.hmmscan.out" --cpu 20 $SCRIPT_DIR/ICEfamily_refer/conjugation/YXL_26family.hmm "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
 			grep -v "#" "${tempF}/${line}.fa2.faa.YXL.hmmscan.out" | tr -s ' ' '\t' > "${tempF}/${line}.fa2.faa.YXL.hmmscan.modified.out"
 			cat "${tempF}/${line}.fa2.faa.icefinder.hmmscan.modified.out" "${tempF}/${line}.fa2.faa.YXL.hmmscan.modified.out" > "${tempF}/${line}.fa2.faa.merge.all.hmmscan.out"
 			echo "=== Step 2.4: studying $line align and refer to the ICEcream database"
 			mkdir -p "${outputF}/${id}_ICEfamily"
-			Rscript ICEfamily_refer/familytools/merge.version7.R "${tempF}/${line}.fa2.faa.merge.all.hmmscan.out" 1e-5 "${outputF}/icefinder.result.summary.txt" "${outputF}" "${tempF}" 
+			Rscript $SCRIPT_DIR/ICEfamily_refer/familytools/merge.version7.R "${tempF}/${line}.fa2.faa.merge.all.hmmscan.out" 1e-5 "${outputF}/icefinder.result.summary.txt" "${outputF}" "${tempF}" 
 			cat ${outputF}/${id}_ICEfamily/${id}_ICEfamily_result.txt >>${outputF}/icefamily.result.summary.txt
         fi
     done < ${tempF}/icefinder.result.summary_ids.txt 
@@ -176,8 +177,8 @@ run_identify_ARG(){
 	echo "=== Step 3: annotate ARGs on ICEs"
 	while read -r line; do
 	    echo "=== Step 3: annotate ARGs on ICEs $line"
-	    blastp -db ICEfamily_refer/SARG_20200618_with_multicomponent.fasta -query "${tempF}/${line}.gbk.fa2.faa" -out "${tempF}/${line}.gbk.fa2.faa.tab" -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore slen qlen" -max_target_seqs 5
-        Rscript ICEfamily_refer/familytools/blastx_out_treatment_linux_20230920.R "${tempF}/${line}.gbk.fa2.faa.tab" 70 80 ICEfamily_refer/familytools/structure_20200330_includingmutation.txt 1e-10 "$tempF"
+	    blastp -db $SCRIPT_DIR/ICEfamily_refer/SARG_20200618_with_multicomponent.fasta -query "${tempF}/${line}.gbk.fa2.faa" -out "${tempF}/${line}.gbk.fa2.faa.tab" -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore slen qlen" -max_target_seqs 5
+        Rscript $SCRIPT_DIR/ICEfamily_refer/familytools/blastx_out_treatment_linux_20230920.R "${tempF}/${line}.gbk.fa2.faa.tab" 70 80 $SCRIPT_DIR/ICEfamily_refer/familytools/structure_20200330_includingmutation.txt 1e-10 "$tempF"
 	done < ${tempF}/icefinder.result.summary_ids.txt 
 }
 run_identify_ARG
@@ -197,8 +198,8 @@ draw_in_line(){
 		IFS='_' read -ra parts <<< "$detail"
 		if [[ ${#parts[@]} -eq 2 ]]; then
 		    detail_name="${parts[1]}"
-			python ICEfamily_refer/familytools/organize_orfs.py "${start}..${end}" ICEfamily_refer/familytools/long_short_label_plot.txt "${outputF}/${line}_ICEfamily/${line}_classification_summary_details${detail_name}.txt" "${tempF}/extracted_classification_${line}.gbk.fa2.faa.tab.txt" ${outputF}/${line}/${file4} "${outputF}/${line}"
-			python ICEfamily_refer/familytools/plotting_script.py "${outputF}/${line}_combined_orfs.txt" "${outputF}"
+			python $SCRIPT_DIR/ICEfamily_refer/familytools/organize_orfs.py "${start}..${end}" $SCRIPT_DIR/ICEfamily_refer/familytools/long_short_label_plot.txt "${outputF}/${line}_ICEfamily/${line}_classification_summary_details${detail_name}.txt" "${tempF}/extracted_classification_${line}.gbk.fa2.faa.tab.txt" ${outputF}/${line}/${file4} "${outputF}/${line}"
+			python $SCRIPT_DIR/ICEfamily_refer/familytools/plotting_script.py "${outputF}/${line}_combined_orfs.txt" "${outputF}"
 		elif [[ ${#parts[@]} -gt 2 ]]; then
 		    echo "Executing another type of command"
 		else
