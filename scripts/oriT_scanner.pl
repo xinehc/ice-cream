@@ -5,6 +5,8 @@
 use strict;
 use Bio::SeqIO;
 use Getopt::Std;
+use File::Basename;
+my $SCRIPT_DIR = dirname(__FILE__);
 
 our ($opt_a, $opt_n, $opt_t) = "";
 my $usage = qq(
@@ -29,7 +31,7 @@ my $job_id = $opt_a;
 my $i = $opt_n;	#candidate region ID
 my $tmp_dir = "$opt_t/$job_id/"; #tmp dir
 my $candidate_dir = $tmp_dir."/candidate/";
-my $db_dir = "./data/";
+my $db_dir = "$SCRIPT_DIR/../data/";
 
 
 ### input file

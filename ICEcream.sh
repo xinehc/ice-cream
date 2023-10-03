@@ -159,7 +159,7 @@ run_icefamily_identify(){
 				python $SCRIPT_DIR/ICEfamily_refer/familytools/amendORF2.py "$fasta_file"
 			fi
 			echo "=== Step 2.3: studying $line hmmscan"
-			hmmscan --tblout "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" --cpu 20 data/ICE.hmm.db "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
+			hmmscan --tblout "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" --cpu 20 $SCRIPT_DIR/data/ICE.hmm.db "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
 			grep -v "#" "${tempF}/${line}.fa2.faa.icefinder.hmmscan.out" | tr -s ' ' '\t' > "${tempF}/${line}.fa2.faa.icefinder.hmmscan.modified.out"
 			hmmscan --tblout "${tempF}/${line}.fa2.faa.YXL.hmmscan.out" --cpu 20 $SCRIPT_DIR/ICEfamily_refer/conjugation/YXL_26family.hmm "${tempF}/${line}.fa2.faa" >> ${tempF}/icefamily.identification.log
 			grep -v "#" "${tempF}/${line}.fa2.faa.YXL.hmmscan.out" | tr -s ' ' '\t' > "${tempF}/${line}.fa2.faa.YXL.hmmscan.modified.out"

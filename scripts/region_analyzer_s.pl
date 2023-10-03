@@ -6,6 +6,8 @@ use strict;
 # use Bio::Perl;
 use Bio::SeqIO;
 use Getopt::Std;
+use File::Basename;
+my $SCRIPT_DIR = dirname(__FILE__);
 
 our ($opt_h, $opt_i, $opt_t, $opt_o, $opt_a, $opt_n, $opt_r, $opt_d, $opt_g) = "";
 my $usage = q(
@@ -36,7 +38,7 @@ my $can_region_right;	#candidate region right coordinate
 my $tmp_path = "$opt_t/$job_id";
 my $candidate_dir = "${tmp_path}/candidate";
 my $seq_fna = "$tmp_path/$job_id.fna";
-my $db_dir = "./data/";
+my $db_dir = "$SCRIPT_DIR/../data/";
 my $download_dir = "$opt_o/$job_id/";
 my $candidate_region_fna = "${candidate_dir}/candidate_region_${i}.fna";
 my $candidate_region_faa = "${candidate_dir}/candidate_region_${i}.faa";

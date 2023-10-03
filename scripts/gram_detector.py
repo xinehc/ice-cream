@@ -1,12 +1,14 @@
 import sys
 from Bio import SeqIO
+import os
+PATH = os.path.dirname(os.path.realpath(__file__))
 
-ids="data/all.gram.positive.gca.txt"
+ids = os.path.join(PATH, '..', 'data', 'all.gram.positive.gca.txt')
 b=[]
 for line in open(ids,'r'):
     b.append(str(line).strip())
 
-actino="data/all.gram.positive.gca.actinobacteria.txt"
+actino = os.path.join(PATH, '..', 'data', 'all.gram.positive.gca.actinobacteria.txt')
 c=[]
 for line in open(actino,'r'):
     c.append(str(line).strip())
@@ -26,4 +28,3 @@ else:
     fileoutput2.write(acc+"     other\n")
 
 fileoutput2.close()
-

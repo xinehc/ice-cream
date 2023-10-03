@@ -40,7 +40,7 @@ system "chmod 777 $download_dir";
 my $error_log = $tmp_path."run_region_finder.log";
 
 #database
-my $db_dir = "./data/";
+my $db_dir = "$SCRIPT_DIR/../data/";
 my $int_hmm_db = $db_dir."Int.hmm.db";###transposase and integrase hmm
 my $ice_hmm_db = $db_dir."ICE.hmm.db";### ICE singature protein hmm
 my $threshold_file = $db_dir."threshold";###JUN definded parameters
